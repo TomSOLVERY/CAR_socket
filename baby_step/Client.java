@@ -9,18 +9,20 @@ import java.net.*;
 
 public class Client {
 
-	String serverHost = "localhost";
-	int serverPort = 2019;
-	Socket server;
-	String name = "Groot";
+	static String serverHost = "localhost";
+	static int serverPort = 2020;
+	static Socket server;
+	static String name = "Groot";
 
 	public Client(String host, int port) throws UnknownHostException, IOException {
-		serverHost = host;
+    	serverHost = host;
 		serverPort = port;
-		server = new Socket(serverHost, serverPort);
+		
 	}
 
-	public void main() throws IOException {
+	public static void main(String args[]) throws IOException {
+		server = new Socket(serverHost, serverPort);
+		
 		OutputStream os = server.getOutputStream();
 		DataOutputStream dos = new DataOutputStream(os);
 
@@ -32,7 +34,7 @@ public class Client {
 		DataInputStream dis = new DataInputStream(is);
 
 		int length = dis.readInt();
-		byte[] response = new byte [length];
+		byte[] response = new byte[length];
 		int nread = 0;
 		int nb = 0;
 		while (nread < length) {
@@ -43,5 +45,11 @@ public class Client {
 		}
 		String res = new String(response);
 		System.out.println(res);
+		
+		server.close();
+		os.close();
+		dos.close();
+		is.close();
+		dis.close();
 	}
 }
