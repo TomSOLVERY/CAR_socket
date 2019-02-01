@@ -9,16 +9,10 @@ import java.net.*;
 
 public class Client {
 
-	static String serverHost = "localhost";
-	static int serverPort = 2020;
-	static Socket server;
-	static String name = "Groot";
-
-	public Client(String host, int port) throws UnknownHostException, IOException {
-    	serverHost = host;
-		serverPort = port;
-
-	}
+	private static String serverHost = "localhost";
+	private static int serverPort = 2020;
+	private static Socket server;
+	private static String name = "Groot";
 
 	public static void main(String args[]) throws IOException {
 		server = new Socket(serverHost, serverPort);
