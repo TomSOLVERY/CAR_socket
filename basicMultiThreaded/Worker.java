@@ -21,17 +21,18 @@ public class Worker extends Thread {
 	public Worker(Socket cl, int id) throws IOException {
 		client = cl;
 		this.id = id;
-		os = client.getOutputStream();
-		dos = new DataOutputStream(os);
-		is = client.getInputStream();
-		dis = new DataInputStream(is);
+
 		this.start();
 	}
 
 	public void run() {
 
-		try {
 
+		try {
+			os = client.getOutputStream();
+			dos = new DataOutputStream(os);
+			is = client.getInputStream();
+			dis = new DataInputStream(is);
 			int length = dis.readInt();
 			byte[] b = new byte[length];
 			int nread = 0;

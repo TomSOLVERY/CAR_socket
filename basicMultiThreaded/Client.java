@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.*;
+import java.util.Random;
 
 public class Client {
 
@@ -43,7 +44,7 @@ public class Client {
 				break;
 			nread += nb;
 		}
-		FileOutputStream fos = new FileOutputStream("src/" + name + "res");
+		FileOutputStream fos = new FileOutputStream("src/" + name + "res" + (System.currentTimeMillis()/1000));
 		fos.write(response);
 		System.out.println("Client OK");
 		

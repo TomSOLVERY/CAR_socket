@@ -13,7 +13,6 @@ public class Server {
 		int id = 1;
 		while (true) {
 			Socket client = server.accept();
-			//System.out.println(client.);
 			new Worker(client, id);
 			System.out.println("Worker " + id + " created");
 			id++;
