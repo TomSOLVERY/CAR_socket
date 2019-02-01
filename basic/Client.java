@@ -1,7 +1,8 @@
-package baby_step;
+package basic;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,7 +18,6 @@ public class Client {
 	public Client(String host, int port) throws UnknownHostException, IOException {
     	serverHost = host;
 		serverPort = port;
-
 	}
 
 	public static void main(String args[]) throws IOException {
@@ -43,13 +43,15 @@ public class Client {
 				break;
 			nread += nb;
 		}
-		String res = new String(response);
-		System.out.println(res);
+		FileOutputStream fos = new FileOutputStream("src/" + name + "res");
+		fos.write(response);
+		System.out.println("Client OK");
 		
 		server.close();
 		os.close();
 		dos.close();
 		is.close();
 		dis.close();
+		fos.close();
 	}
 }
