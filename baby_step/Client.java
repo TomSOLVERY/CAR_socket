@@ -41,9 +41,10 @@ public class Client {
 		System.out.println(res);
 		
 		server.close();
-		os.close();
-		dos.close();
 		is.close();
 		dis.close();
+		dos.flush();
+		os.close();
+		dos.close();
 	}
 }

@@ -9,14 +9,12 @@ public class Server {
 	  server = new ServerSocket(port);
 	  while(true) {
 		  Socket client = server.accept();
+		  
 		  InputStream is;
-		  OutputStream os;
 		  DataInputStream dis;
-		  DataOutputStream dos;
-		  os = client.getOutputStream();
-		  dos = new DataOutputStream(os);
 		  is = client.getInputStream();
 		  dis = new DataInputStream(is);
+		  
 		  int length = dis.readInt();
 		  byte[] b = new byte[length];
 		  int nread = 0;
@@ -28,11 +26,24 @@ public class Server {
 			  }
 			nread+=num;  
 		  }
+		  
 		  String name = new String(b);
 		  String hello = "Hello " + name;
 		  byte[] request = hello.getBytes();
+		  
+		  OutputStream os;
+		  DataOutputStream dos;
+		  os = client.getOutputStream();
+		  dos = new DataOutputStream(os);
 		  dos.writeInt(request.length);
 		  dos.write(request);
+		  
+		  dos.flush();
+		  is.close();
+		  dis.close();
+		  os.close();
+		  dos.close();
+		  
 		  System.out.println(name);
 	  }
   }
