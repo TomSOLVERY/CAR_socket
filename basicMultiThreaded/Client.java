@@ -16,11 +16,6 @@ public class Client {
 	static Socket server;
 	static String name = "Groot";
 
-	public Client(String host, int port) throws UnknownHostException, IOException {
-    	serverHost = host;
-		serverPort = port;
-	}
-
 	public static void main(String args[]) throws IOException {
 		server = new Socket(serverHost, serverPort);
 		
