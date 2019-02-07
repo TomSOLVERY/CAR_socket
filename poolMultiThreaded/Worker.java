@@ -88,6 +88,17 @@ public class Worker extends Thread {
 				sleep(10000); // Simulate some lag
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println("Erreur sur L'ouverture d'un stream");
+		} finally {
+			try {
+				is.close();
+				os.close();
+				dis.close();
+				dos.close();
+				fis.close();
+			} catch (IOException e) {
+				System.out.println("Erreur sur la fermeture d'un stream ou fichier inexistant");
 			}
 
 			System.out.println("Worker " + id + " OK");

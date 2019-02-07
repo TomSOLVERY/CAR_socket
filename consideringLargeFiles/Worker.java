@@ -1,4 +1,4 @@
-package basicMultiThreaded;
+package consideringLargeFiles;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -11,6 +11,7 @@ import java.net.Socket;
 
 public class Worker extends Thread {
 	Socket client;
+	SocketBuffer sb;
 	int id;
 	InputStream is;
 	OutputStream os;
@@ -18,16 +19,17 @@ public class Worker extends Thread {
 	DataOutputStream dos;
 	FileInputStream fis;
 
-	public Worker(Socket cl, int id) throws IOException {
-		client = cl;
+	public Worker(SocketBuffer buff, int id) throws IOException, InterruptedException {
+		sb = buff;
 		this.id = id;
-		this.start();
+		System.out.println("Worker " + id + " created");
+		start();
 	}
 
 	public void run() {
+		
 		try {
-			
-			// Getting the request from the client
+			client = sb.get();
 			os = client.getOutputStream();
 			dos = new DataOutputStream(os);
 			is = client.getInputStream();
@@ -45,32 +47,27 @@ public class Worker extends Thread {
 				nread += num;
 			}
 
-			// Searching for the file, on the source folder for easier testing
-			// But not a good place to store files in reality
 			String fileName = "src/" + new String(b);
 			File f = new File(fileName);
-			
-			// Putting the content in a buffer
 			fis = new FileInputStream(f);
 			length = (int) f.length();
-			byte[] request = new byte[length];
+			byte[] request = new byte[512];
 			nread = 0;
 			num = 0;
+			dos.writeInt(length);
 			while (nread < length) {
-				num = fis.read(request, nread, length - nread);
+				num = fis.read(request, 0, 512); // On lit par chunk de 512bytes afin de permettre une meilleure efficacité les gros fichiers.
 				if (num == -1) {
 					break;
 				}
 				nread += num;
+				dos.write(request); // On envoie directement le chunk s'en attendre d'avoir tous reçu
 			}
 
-			// Sending the file to the client
-			dos.writeInt(request.length);
-			dos.write(request);
-		} catch (IOException e) {
-			System.out.println("Erreur sur L'ouverture d'un stream");
+			
+		} catch (IOException | InterruptedException e) {
+			System.out.println("Erreur sur l'ouverture d'un stream");
 		} finally {
-			// Closing the streams
 			try {
 				is.close();
 				os.close();
@@ -78,11 +75,11 @@ public class Worker extends Thread {
 				dos.close();
 				fis.close();
 			} catch (IOException e) {
-				System.out.println("Erreur sur la fermeture d'un stream ou fichier inexistant");
+				System.out.println("Exception lors de la fermeture d'un Stream ou fichier inexistant");
 			}
 		}
-		try {
-			sleep(10000); // Simulate some lag
+		try {  // Utilisé pour test besoin que les workers mettent du temps
+			sleep(10000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
