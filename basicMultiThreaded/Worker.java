@@ -26,6 +26,8 @@ public class Worker extends Thread {
 
 	public void run() {
 		try {
+			
+			// Getting the request from the client
 			os = client.getOutputStream();
 			dos = new DataOutputStream(os);
 			is = client.getInputStream();
@@ -43,8 +45,12 @@ public class Worker extends Thread {
 				nread += num;
 			}
 
+			// Searching for the file, on the source folder for easier testing
+			// But not a good place to store files in reality
 			String fileName = "src/" + new String(b);
 			File f = new File(fileName);
+			
+			// Putting the content in a buffer
 			fis = new FileInputStream(f);
 			length = (int) f.length();
 			byte[] request = new byte[length];
@@ -58,10 +64,12 @@ public class Worker extends Thread {
 				nread += num;
 			}
 
+			// Sending the file to the client
 			dos.writeInt(request.length);
 			dos.write(request);
 		} catch (IOException e) {
 		} finally {
+			// Closing the streams
 			try {
 				is.close();
 				os.close();
@@ -72,7 +80,7 @@ public class Worker extends Thread {
 			}
 		}
 		try {
-			sleep(10000);
+			sleep(10000); // Simulate some lag
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

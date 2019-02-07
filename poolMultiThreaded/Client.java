@@ -23,6 +23,7 @@ public class Client {
 	public void start() throws IOException {
 		server = new Socket(serverHost, serverPort);
 		
+		// Sending the file name
 		OutputStream os = server.getOutputStream();
 		DataOutputStream dos = new DataOutputStream(os);
 
@@ -33,6 +34,7 @@ public class Client {
 		InputStream is = server.getInputStream();
 		DataInputStream dis = new DataInputStream(is);
 
+		// Getting the response
 		int length = dis.readInt();
 		byte[] response = new byte[length];
 		int nread = 0;
@@ -43,11 +45,16 @@ public class Client {
 				break;
 			nread += nb;
 		}
+		
+		// Writing it in to a file, on the source folder for easier testing
+		// In reality we should use a hierarchy with folders and files
 		FileOutputStream fos = new FileOutputStream("src/" + name + "res" + id);
 		fos.write(response);
 		System.out.println("Client " + id + " OK");
 		
 		server.close();
+		
+		// Closing the streams
 		os.close();
 		dos.close();
 		is.close();

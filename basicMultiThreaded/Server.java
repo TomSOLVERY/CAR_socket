@@ -13,6 +13,7 @@ public class Server {
 		int id = 1;
 		while (true) {
 			Socket client = server.accept();
+			// Create a worker thread who will handle the work for this client
 			new Worker(client, id);
 			System.out.println("Worker " + id + " created");
 			id++;

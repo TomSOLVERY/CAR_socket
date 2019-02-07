@@ -27,60 +27,70 @@ public class Worker extends Thread {
 	}
 
 	public void run() {
-		
-		try {
-			client = sb.get();
-			os = client.getOutputStream();
-			dos = new DataOutputStream(os);
-			is = client.getInputStream();
-			dis = new DataInputStream(is);
-			
-			int length = dis.readInt();
-			byte[] b = new byte[length];
-			int nread = 0;
-			int num = 0;
-			while (nread < length) {
-				num = dis.read(b, nread, length - nread);
-				if (num == -1) {
-					break;
-				}
-				nread += num;
-			}
-
-			String fileName = "src/" + new String(b);
-			File f = new File(fileName);
-			fis = new FileInputStream(f);
-			length = (int) f.length();
-			byte[] request = new byte[length];
-			nread = 0;
-			num = 0;
-			while (nread < length) {
-				num = fis.read(request, nread, length - nread);
-				if (num == -1) {
-					break;
-				}
-				nread += num;
-			}
-
-			dos.writeInt(request.length);
-			dos.write(request);
-		} catch (IOException | InterruptedException e) {
-		} finally {
+		// when the worker finishes with a client he should be ready 
+		// for another request, therefore a while true structure
+		while (true) {
 			try {
-				is.close();
-				os.close();
-				dis.close();
-				dos.close();
-				fis.close();
-			} catch (IOException e) {
+				// Getting the request from the client, socket in the buffer
+				client = sb.get();
+				os = client.getOutputStream();
+				dos = new DataOutputStream(os);
+				is = client.getInputStream();
+				dis = new DataInputStream(is);
+
+				int length = dis.readInt();
+				byte[] b = new byte[length];
+				int nread = 0;
+				int num = 0;
+				while (nread < length) {
+					num = dis.read(b, nread, length - nread);
+					if (num == -1) {
+						break;
+					}
+					nread += num;
+				}
+
+				// Searching for the file, on the source folder for easier testing
+				// But not a good place to store files in reality
+				String fileName = "src/" + new String(b);
+				File f = new File(fileName);
+				
+				// Putting the content in a buffer
+				fis = new FileInputStream(f);
+				length = (int) f.length();
+				byte[] request = new byte[length];
+				nread = 0;
+				num = 0;
+				while (nread < length) {
+					num = fis.read(request, nread, length - nread);
+					if (num == -1) {
+						break;
+					}
+					nread += num;
+				}
+
+				// Sending the file to the client
+				dos.writeInt(request.length);
+				dos.write(request);
+			} catch (IOException | InterruptedException e) {
+			} finally {
+				// Closing the streams
+				try {
+					is.close();
+					os.close();
+					dis.close();
+					dos.close();
+					fis.close();
+				} catch (IOException e) {
+				}
 			}
+			try {
+				sleep(10000); // Simulate some lag
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			System.out.println("Worker " + id + " OK");
 		}
-		try {
-			sleep(10000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		System.out.println("Worker " + id + " OK");
-		
 	}
 }

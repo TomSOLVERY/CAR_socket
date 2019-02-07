@@ -13,11 +13,11 @@ public class SocketBuffer {
 	}
 	
 	synchronized public void put (Socket s) throws InterruptedException {
-		/* If the buffer is full, we must wait */
+		// If the buffer is full, we must wait
 		while (nSock() >= buff.length)
 			wait();
 		
-		/* Insertion */
+		// Insertion
 		buff[putIdx] = s;
 		putIdx = (putIdx + 1) % buff.length;
 		
@@ -25,11 +25,11 @@ public class SocketBuffer {
 	}
 	
 	synchronized public Socket get () throws InterruptedException {
-		/* If the buffer is empty, the worker must wait */
+		// If the buffer is empty, the worker must wait
 		while(nSock() <= 0)
 			wait();
 		
-		/* Removal */
+		// Removal
 		Socket s = buff[getIdx];
 		buff[getIdx] = null;
 		getIdx = (getIdx + 1) % buff.length;
@@ -39,6 +39,7 @@ public class SocketBuffer {
 		return s;
 	}
 	
+	// Counts the non null elements in buffer
 	int nSock () {
 		int count = 0;
 		for (Socket s : buff) {
