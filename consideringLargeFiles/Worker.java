@@ -66,6 +66,7 @@ public class Worker extends Thread {
 
 			
 		} catch (IOException | InterruptedException e) {
+			System.out.println("Erreur sur l'ouverture d'un stream");
 		} finally {
 			try {
 				is.close();
@@ -74,9 +75,10 @@ public class Worker extends Thread {
 				dos.close();
 				fis.close();
 			} catch (IOException e) {
+				System.out.println("Exception lors de la fermeture d'un Stream ou fichier inexistant");
 			}
 		}
-		try {
+		try {  // Utilisé pour test besoin que les workers mettent du temps
 			sleep(10000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();

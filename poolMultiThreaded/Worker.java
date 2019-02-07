@@ -65,6 +65,7 @@ public class Worker extends Thread {
 			dos.writeInt(request.length);
 			dos.write(request);
 		} catch (IOException | InterruptedException e) {
+			System.out.println("Erreur sur L'ouverture d'un stream");
 		} finally {
 			try {
 				is.close();
@@ -73,6 +74,7 @@ public class Worker extends Thread {
 				dos.close();
 				fis.close();
 			} catch (IOException e) {
+				System.out.println("Erreur sur la fermeture d'un stream ou fichier inexistant");
 			}
 		}
 		try {
